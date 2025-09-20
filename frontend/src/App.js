@@ -1,10 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./App.css";
-
-export const API_BASE = import.meta.env?.VITE_API_URL;
-if (!API_BASE?.startsWith('http')) {
-  throw new Error('Missing VITE_API_URL. Set it in Vercel (or .env.local for dev).');
-}
+import { API_BASE } from "./lib/api";
 
 const fileToDataUrl = (file) =>
   new Promise((resolve, reject) => {
