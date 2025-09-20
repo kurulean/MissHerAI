@@ -1,0 +1,17 @@
+# macOS / OS
+.DS_Store
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+.env
+
+# Node
+node_modules/
+dist/
+build/
+*.log
+.cache/
