@@ -1,31 +1,37 @@
-// src/lib/api.js
-
-// Resolve API base from Vite env; fall back to localhost *only* in dev.
-// Then normalize by stripping any trailing slash.
-const RAW_API =
+const fromVite =
   (typeof import.meta !== "undefined" &&
     import.meta.env &&
-    import.meta.env.VITE_API_URL) ||
+    import.meta.env.VITE_API_URL) || "";
+
+const devFallback =
   (typeof import.meta !== "undefined" &&
-  import.meta.env &&
-  import.meta.env.DEV
+    import.meta.env &&
+    import.meta.env.DEV)
     ? "http://127.0.0.1:8000"
-    : "");
+    : "";
 
-export const API_BASE = RAW_API.replace(/\/+$/, "");
 
-if (!API_BASE) {
-  throw new Error(
-    "Missing VITE_API_URL. Set it in Vercel (Production & Preview) or in frontend/.env.local for dev."
-  );
-}
+export const API_BASE = (fromVite || devFallback).replace(/\/+$/, "");
 
-// Expose for quick verification in the browser console: window.__API_BASE
 if (typeof window !== "undefined") {
   window.__API_BASE = API_BASE;
 }
 
+
+async function safeText(res) {
+  try {
+    return await res.text();
+  } catch {
+    return `${res.status} ${res.statusText}`;
+  }
+}
+
 export async function startSession({ text, images = [] }) {
+  if (!API_BASE) {
+    throw new Error(
+      "API base is not configured. Set VITE_API_URL in Vercel (Production & Preview) or .env.local for dev."
+    );
+  }
   const r = await fetch(`${API_BASE}/api/start`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -36,6 +42,11 @@ export async function startSession({ text, images = [] }) {
 }
 
 export async function sendMessage(sessionId, { text, images = [] }) {
+  if (!API_BASE) {
+    throw new Error(
+      "API base is not configured. Set VITE_API_URL in Vercel (Production & Preview) or .env.local for dev."
+    );
+  }
   const r = await fetch(
     `${API_BASE}/api/session/${encodeURIComponent(sessionId)}/send`,
     {
@@ -46,13 +57,4 @@ export async function sendMessage(sessionId, { text, images = [] }) {
   );
   if (!r.ok) throw new Error(await safeText(r));
   return r.json(); // { reply }
-}
-
-// Helper to avoid unreadable error bodies
-async function safeText(res) {
-  try {
-    return await res.text();
-  } catch {
-    return `${res.status} ${res.statusText}`;
-  }
 }
