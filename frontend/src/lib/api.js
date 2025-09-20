@@ -1,23 +1,12 @@
-const fromVite =
-  (typeof import.meta !== "undefined" &&
-    import.meta.env &&
-    import.meta.env.VITE_API_URL) || "";
+// src/lib/api.js
 
-const devFallback =
-  (typeof import.meta !== "undefined" &&
-    import.meta.env &&
-    import.meta.env.DEV)
-    ? "http://127.0.0.1:8000"
-    : "";
+// Hardcoded for stability. We'll switch back to env after it's stable.
+export const API_BASE = "https://missherai-backend.onrender.com";
 
+// (Optional) expose for debugging in the browser console
+if (typeof window !== "undefined") window.__API_BASE = API_BASE;
 
-export const API_BASE = (fromVite || devFallback).replace(/\/+$/, "");
-
-if (typeof window !== "undefined") {
-  window.__API_BASE = API_BASE;
-}
-
-
+// Helper to avoid unreadable error bodies
 async function safeText(res) {
   try {
     return await res.text();
@@ -27,11 +16,6 @@ async function safeText(res) {
 }
 
 export async function startSession({ text, images = [] }) {
-  if (!API_BASE) {
-    throw new Error(
-      "API base is not configured. Set VITE_API_URL in Vercel (Production & Preview) or .env.local for dev."
-    );
-  }
   const r = await fetch(`${API_BASE}/api/start`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -42,11 +26,6 @@ export async function startSession({ text, images = [] }) {
 }
 
 export async function sendMessage(sessionId, { text, images = [] }) {
-  if (!API_BASE) {
-    throw new Error(
-      "API base is not configured. Set VITE_API_URL in Vercel (Production & Preview) or .env.local for dev."
-    );
-  }
   const r = await fetch(
     `${API_BASE}/api/session/${encodeURIComponent(sessionId)}/send`,
     {
