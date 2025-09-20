@@ -6,10 +6,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from dotenv import load_dotenv
 
-# --- Load env vars ---
 load_dotenv()
 
-# --- OpenAI Client ---
+#openai client
 from openai import OpenAI
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
@@ -28,7 +27,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ---------- SESSION STORE ----------
+#session start 
 SESSIONS: Dict[str, Dict[str, Any]] = {}
 MAX_CONTEXT = 20
 
@@ -42,7 +41,6 @@ class SendPayload(BaseModel):
 
 ANALYSIS_INSTRUCTIONS = """
 You are analyzing past messages to build a texting persona.
-
 Extract the sender’s texting style with EVIDENCE from the text. Be concrete and do not invent.
 Return STRICT JSON with these keys (nothing else):
 

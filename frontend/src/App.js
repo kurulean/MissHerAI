@@ -15,7 +15,7 @@ const fileToDataUrl = (file) =>
   });
 
 export default function App() {
-  // steps: hero → paste → chat
+  // steps: hero -> paste -> chat
   const [step, setStep] = useState("hero");
   const [heroFading, setHeroFading] = useState(false);
   const [pasteFading, setPasteFading] = useState(false);
@@ -37,13 +37,13 @@ export default function App() {
   const logEndRef = useRef(null);
   useEffect(() => { logEndRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
 
-  // ---------- HERO ----------
+  // hero
   function onStartClick() {
     setHeroFading(true);
     setTimeout(() => setStep("paste"), 450);
   }
 
-  // ---------- Paste: handlers ----------
+  // handlers
   async function onPasteToBox(e) {
     const items = e.clipboardData?.items || [];
     const files = [];
@@ -106,7 +106,7 @@ export default function App() {
     }
   }
 
-  // ---------- Chat: handlers ----------
+  // chat handler
   async function onSendChat() {
     if (sending) return;
     setErr("");
@@ -165,7 +165,7 @@ export default function App() {
     }
   }
 
-  // ---------- RENDER ----------
+  // render
   if (step === "hero") {
     return (
       <section className={`hero ${heroFading ? "fade-out" : ""}`}>
