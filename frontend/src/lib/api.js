@@ -1,8 +1,10 @@
 // src/lib/api.js
 
-export const API_BASE =
-  (typeof import.meta !== "undefined" && import.meta.env?.VITE_API_URL) ||
-  "http://127.0.0.1:8000";
+// src/lib/api.js
+export const API_BASE = import.meta.env?.VITE_API_URL;
+if (!API_BASE?.startsWith('http')) {
+  throw new Error('Missing VITE_API_URL. Set it in Vercel (or .env.local for dev).');
+}
 
 export async function startSession({ text, images }) {
   const r = await fetch(`${API_BASE}/api/start`, {
