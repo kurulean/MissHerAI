@@ -1,9 +1,7 @@
 // src/lib/api.js
 
-// Vite: reads VITE_API_BASE from frontend/.env.local
 export const API_BASE =
-  (typeof import.meta !== "undefined" && import.meta.env?.VITE_API_BASE) ||
-  process.env.REACT_APP_API_BASE ||
+  (typeof import.meta !== "undefined" && import.meta.env?.VITE_API_URL) ||
   "http://127.0.0.1:8000";
 
 export async function startSession({ text, images }) {
@@ -13,7 +11,7 @@ export async function startSession({ text, images }) {
     body: JSON.stringify({ text, images }),
   });
   if (!r.ok) throw new Error(await r.text());
-  return r.json(); // { session_id, opening, profile }
+  return r.json();
 }
 
 export async function sendMessage(sessionId, { text, images = [] }) {
@@ -23,5 +21,5 @@ export async function sendMessage(sessionId, { text, images = [] }) {
     body: JSON.stringify({ text, images }),
   });
   if (!r.ok) throw new Error(await r.text());
-  return r.json(); // { reply }
+  return r.json();
 }
