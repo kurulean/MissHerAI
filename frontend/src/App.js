@@ -1,6 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./App.css";
-import { API_BASE } from "./lib/api";
+
+const API_BASE =
+  (typeof import.meta !== "undefined" && import.meta.env?.VITE_API_BASE) ||
+  process.env.REACT_APP_API_BASE ||
+  "http://127.0.0.1:8000";
 
 const fileToDataUrl = (file) =>
   new Promise((resolve, reject) => {
